@@ -11,13 +11,11 @@ const ChannelButton: React.FC<ChannelButtonProps> = ({ channel }) => {
       href={channel.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center justify-center p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 transform hover:-translate-y-1"
+      className="block w-full p-4 text-center bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 rounded-lg shadow-md hover:from-gray-600 hover:to-gray-800 transition-all duration-300 transform hover:scale-105"
     >
-      <div className="flex-grow text-center">
-        <span className="font-bold text-lg text-gray-200 group-hover:text-white transition-colors duration-300">
-          {channel.name}
-        </span>
-      </div>
+      <span className="font-semibold text-lg text-gray-100">
+        {channel.name}
+      </span>
     </a>
   );
 };
