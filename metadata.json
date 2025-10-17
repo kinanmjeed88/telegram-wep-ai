@@ -1,0 +1,5 @@
+{
+  "name": "TechTouch Channels",
+  "description": "A web application that displays a list of TechTouch's Telegram channels. It features a profile section with an uploadable image and a grid of professionally styled buttons linking to each channel.",
+  "requestFramePermissions": []
+}
