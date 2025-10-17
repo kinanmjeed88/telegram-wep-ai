@@ -17,7 +17,7 @@ export const CATEGORIES: Category[] = [
   {
     title: 'قنوات الألعاب',
     channels: [
-      { name: 'TechTouch Gaming 🏆', url: 'https://t.me/techtouch0', icon: 'fas fa-trophy' },
+      { name: 'Gaming 🏆', url: 'https://t.me/techtouch0', icon: 'fas fa-trophy' },
       { name: 'TechTouch 🎮 GAME PS&PC', url: 'https://t.me/techtouch4', icon: 'fas fa-gamepad' },
       { name: 'Gaming 🏆 مناقشات', url: 'https://t.me/+ga-cVRm_MVNmNjFi', icon: 'fas fa-comments' },
       { name: 'pc & ps 🏆⁩ مناقشات', url: 'https://t.me/+B1bDJP1Tb143ZmUy', icon: 'fas fa-headset' },
