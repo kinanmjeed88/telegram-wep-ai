@@ -2,8 +2,8 @@
 import React from 'react';
 import Header from './components/Header.tsx';
 import ChannelButton from './components/ChannelButton.tsx';
-import { CHANNELS } from './constants.ts';
-import type { Channel } from './types.ts';
+import { CATEGORIES } from './constants.ts';
+import type { Category, Channel } from './types.ts';
 
 const App: React.FC = () => {
   return (
@@ -14,9 +14,18 @@ const App: React.FC = () => {
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-500">
             قنواتنا على تيليجرام
           </h2>
-          <div className="grid grid-cols-3 gap-6">
-            {CHANNELS.map((channel: Channel) => (
-              <ChannelButton key={channel.name} channel={channel} />
+          <div className="space-y-12">
+            {CATEGORIES.map((category: Category) => (
+              <section key={category.title}>
+                <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-300 border-b-2 border-gray-700 pb-2">
+                  {category.title}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {category.channels.map((channel: Channel) => (
+                    <ChannelButton key={channel.name} channel={channel} />
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </div>
