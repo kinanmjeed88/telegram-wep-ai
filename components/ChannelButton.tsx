@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Channel } from '../types';
+import type { Channel } from '../types.ts';
 
 interface ChannelButtonProps {
   channel: Channel;

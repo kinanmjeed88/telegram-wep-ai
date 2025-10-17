@@ -1,4 +1,4 @@
-import type { Channel } from './types';
+import type { Channel } from './types.ts';
 
 export const CHANNELS: Channel[] = [
   // Row 1

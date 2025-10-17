@@ -1,9 +1,9 @@
 
 import React from 'react';
-import Header from './components/Header';
-import ChannelButton from './components/ChannelButton';
-import { CHANNELS } from './constants';
-import type { Channel } from './types';
+import Header from './components/Header.tsx';
+import ChannelButton from './components/ChannelButton.tsx';
+import { CHANNELS } from './constants.ts';
+import type { Channel } from './types.ts';
 
 const App: React.FC = () => {
   return (
