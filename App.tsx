@@ -41,7 +41,7 @@ const App: React.FC = () => {
               aria-label="Search for a channel"
             />
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <i className="fas fa-search text-gray-500"></i>
+              <i className="fas fa-search text-gray-500" aria-hidden="true"></i>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ const App: React.FC = () => {
         <footer className="text-center text-gray-500 pb-4">
             <p className="mb-2">
                 <a href={MAIN_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-teal-300 transition-colors duration-300">
-                    <i className="fas fa-paper-plane mr-2"></i>
+                    <i className="fas fa-paper-plane mr-2" aria-hidden="true"></i>
                     انضم إلى قناتنا الرئيسية
                 </a>
             </p>

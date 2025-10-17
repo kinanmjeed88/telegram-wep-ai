@@ -59,12 +59,12 @@ const Header: React.FC = () => {
         />
         {!isLoading && (
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full flex items-center justify-center transition-all duration-300">
-            <i className="fas fa-camera text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+            <i className="fas fa-camera text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true"></i>
           </div>
         )}
         {isLoading && (
           <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-            <i className="fas fa-spinner fa-spin text-white text-3xl"></i>
+            <i className="fas fa-spinner fa-spin text-white text-3xl" aria-hidden="true"></i>
           </div>
         )}
       </div>
