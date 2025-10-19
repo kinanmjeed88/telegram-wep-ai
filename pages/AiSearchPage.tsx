@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { GoogleGenAI } from '@google/genai';
 import { APPS_DATABASE } from '../data/appsDatabase.ts';
 
 interface AiSearchPageProps {
@@ -23,8 +22,6 @@ const AiSearchPage: React.FC<AiSearchPageProps> = ({ onNavigateHome }) => {
     setResponse('');
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
       const appList = APPS_DATABASE
         .map(app => `- ${app.name}: ${app.url}`)
         .join('\n');
@@ -42,16 +39,26 @@ Here is the list of applications:
 ${appList}`;
 
       const userQuery = `Please find the app with the name: "${query}"`;
-
-      const result = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: userQuery,
-        config: {
-          systemInstruction: systemInstruction,
+      
+      const apiResponse = await fetch('/.netlify/functions/ai-search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ userQuery, systemInstruction }),
       });
 
-      setResponse(result.text);
+      if (!apiResponse.ok) {
+        throw new Error(`Server returned an error: ${apiResponse.statusText}`);
+      }
+
+      const data = await apiResponse.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setResponse(data.response);
 
     } catch (e) {
       console.error(e);
@@ -107,16 +114,16 @@ ${appList}`;
                         <button
                             onClick={handleSearch}
                             disabled={isLoading}
-                            className="bg-teal-600 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center"
+                            className="bg-teal-600 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                             {isLoading ? (
                             <>
-                                <i className="fas fa-spinner fa-spin mr-2"></i>
+                                <i className="fas fa-spinner fa-spin"></i>
                                 <span>جاري البحث...</span>
                             </>
                             ) : (
                             <>
-                                <i className="fas fa-paper-plane mr-2"></i>
+                                <i className="fas fa-paper-plane"></i>
                                 <span>اسأل</span>
                             </>
                             )}

@@ -62,11 +62,12 @@ const App: React.FC = () => {
             </div>
             <button
               onClick={() => setCurrentPage('ai-search')}
-              className="flex-shrink-0 bg-teal-600 text-white w-14 h-14 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center transform hover:scale-110"
+              className="flex-shrink-0 bg-teal-600 text-white font-semibold h-14 px-6 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
               aria-label="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
               title="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
             >
-              <i className="fas fa-robot text-2xl"></i>
+              <i className="fas fa-robot text-xl"></i>
+              <span>بحث AI</span>
             </button>
           </div>
 
