@@ -73,6 +73,33 @@ ${appList}`;
       handleSearch();
     }
   };
+  
+  const renderResponseWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+
+    return (
+      <p className="text-gray-200 whitespace-pre-wrap font-mono">
+        {parts.map((part, index) => {
+          if (part.match(urlRegex)) {
+            return (
+              <a
+                key={index}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal-400 hover:underline break-all"
+              >
+                {part}
+              </a>
+            );
+          }
+          return part;
+        })}
+      </p>
+    );
+  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white font-sans">
@@ -132,7 +159,7 @@ ${appList}`;
                     {error && <p className="text-red-400 mt-4 text-center">{error}</p>}
                     {response && (
                     <div className="mt-6 p-4 bg-gray-900/70 border border-gray-700 rounded-lg max-h-80 overflow-y-auto">
-                        <p className="text-gray-200 whitespace-pre-wrap font-mono">{response}</p>
+                        {renderResponseWithLinks(response)}
                     </div>
                     )}
                 </div>
