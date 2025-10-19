@@ -13,7 +13,7 @@ const AiSearchPage: React.FC<AiSearchPageProps> = ({ onNavigateHome }) => {
 
   const handleSearch = async () => {
     if (!query.trim()) {
-      setError('الرجاء إدخال اسم التطبيق للبحث.');
+      setError('الرجاء إدخال استفسارك أو اسم التطبيق للبحث.');
       return;
     }
 
@@ -26,19 +26,26 @@ const AiSearchPage: React.FC<AiSearchPageProps> = ({ onNavigateHome }) => {
         .map(app => `- ${app.name}: ${app.url}`)
         .join('\n');
 
-      const systemInstruction = `You are a friendly and helpful assistant for the "TechTouch" Telegram channel list. Your primary language is Arabic.
-Your task is to find the correct Telegram link for a requested application from the provided list.
-- If you find one or more matching apps, respond politely in Arabic.
-- Present the result clearly with the app name and the link. For example: "تفضل، هذا هو رابط تطبيق [اسم التطبيق]: [الرابط]".
-- If multiple versions or links exist for the same app name, list them all.
-- If you cannot find the app, say so politely in Arabic, for example: "عذراً، لم أتمكن من العثور على التطبيق المطلوب في قائمتنا."
-- Do not provide any information that is not in the list. Do not make up links.
-- Your response must be only in Arabic.
+      const systemInstruction = `أنت مساعد ذكي وودود لموقع "TechTouch". لغتك الأساسية هي العربية. مهمتك هي تحليل استعلام المستخدم وتحديد ما إذا كان يبحث عن تطبيق/لعبة/فيلم معين من القائمة المتوفرة، أم أنه مجرد حوار عام أو تحية.
 
-Here is the list of applications:
+1.  **إذا كان المستخدم يبحث عن تطبيق معين:**
+    *   ابحث في القائمة عن اسم التطبيق.
+    *   إذا وجدت تطابقًا واحدًا أو أكثر، أجب بلطف باللغة العربية.
+    *   قدم النتيجة بوضوح مع اسم التطبيق والرابط. مثال: "تفضل، هذا هو رابط تطبيق [اسم التطبيق]: [الرابط]".
+    *   إذا وجدت إصدارات متعددة لنفس التطبيق، اذكرها جميعًا.
+    *   إذا لم تجد التطبيق، أجب بلطف: "عذراً، لم أتمكن من العثور على التطبيق المطلوب في قائمتنا."
+    *   لا تقدم أي معلومات غير موجودة في القائمة. لا تخترع روابط.
+
+2.  **إذا كان استعلام المستخدم عبارة عن تحية أو محادثة عامة (مثل "مرحباً"، "كيف حالك"، "شكراً") ولا يطلب تطبيقًا معينًا:**
+    *   أجب برسالة الترحيب التالية بالضبط: "أهلاً بك في موقع techtouch. يمكنك كتابة اسم تطبيقات رياضية أو أفلام ومسلسلات أو ذكاء اصطناعي وسأرد من خلال البيانات المرفوعة".
+    *   لا تحاول الإجابة على الأسئلة العامة. فقط أرسل رسالة الترحيب.
+
+يجب أن يكون ردك باللغة العربية فقط.
+
+قائمة التطبيقات هي:
 ${appList}`;
 
-      const userQuery = `Please find the app with the name: "${query}"`;
+      const userQuery = `هذا هو استعلام المستخدم: "${query}"`;
       
       const apiResponse = await fetch('/.netlify/functions/ai-search', {
         method: 'POST',
@@ -125,7 +132,7 @@ ${appList}`;
                         <div className="relative flex-grow">
                             <input
                             type="text"
-                            placeholder="اكتب اسم التطبيق هنا..."
+                            placeholder="اكتب اسم التطبيق هنا أو تحدث معي..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyPress={handleKeyPress}
