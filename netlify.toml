@@ -1,0 +1,23 @@
+# =============================================================================
+# Netlify Configuration File
+# -----------------------------------------------------------------------------
+# This file provides instructions to Netlify on how to build and deploy your
+# site. It ensures that the build command, publish directory, and serverless
+# functions are correctly configured, overriding any potentially incorrect
+# settings in the Netlify UI.
+# =============================================================================
+
+# Build settings
+[build]
+  # The command to run to build the site.
+  # We added a placeholder script in package.json to prevent "missing script" errors.
+  command = "npm run build"
+
+  # The directory to publish. Your index.html is in the root, so we use "."
+  # This is the key fix for the "Deploy directory 'dist' does not exist" error.
+  publish = "."
+
+# Serverless Functions settings
+[functions]
+  # The directory where your Netlify Functions are located.
+  directory = "netlify/functions"
