@@ -2,6 +2,9 @@
   "name": "techtouch-channels-serverless",
   "version": "1.0.0",
   "description": "Dependencies for Netlify Functions",
+  "scripts": {
+    "build": "echo \"No build step required. This script satisfies the Netlify build process.\""
+  },
   "dependencies": {
     "@google/genai": "0.14.0",
     "@netlify/functions": "^2.6.0"
