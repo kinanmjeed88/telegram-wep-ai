@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Dependencies for Netlify Functions",
   "scripts": {
-    "build": "echo \"No build step required. This script satisfies the Netlify build process.\""
+    "build": ":"
   },
   "dependencies": {
     "@google/genai": "0.14.0",
