@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import Header from './components/Header.tsx';
 import ChannelButton from './components/ChannelButton.tsx';
+import AiSearchPage from './pages/AiSearchPage.tsx';
 import { CATEGORIES, MAIN_CHANNEL_URL } from './constants.ts';
 import type { Category, Channel } from './types.ts';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  let animationCounter = 0;
+  const [currentPage, setCurrentPage] = useState('home');
 
   const filteredCategories = useMemo(() => {
     if (!searchTerm.trim()) {
@@ -22,6 +23,20 @@ const App: React.FC = () => {
   
   const hasResults = filteredCategories.some(cat => cat.channels.length > 0);
 
+  const categoryChannelCounts = useMemo(() => {
+    const counts: number[] = [0];
+    let total = 0;
+    for (let i = 0; i < filteredCategories.length - 1; i++) {
+      total += filteredCategories[i].channels.length;
+      counts.push(total);
+    }
+    return counts;
+  }, [filteredCategories]);
+
+  if (currentPage === 'ai-search') {
+    return <AiSearchPage onNavigateHome={() => setCurrentPage('home')} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white font-sans">
       <main className="container mx-auto px-4 py-8 md:py-16">
@@ -31,32 +46,42 @@ const App: React.FC = () => {
             قنواتنا على تيليجرام
           </h2>
 
-          <div className="relative w-full max-w-lg mx-auto mb-12">
-            <input
-              type="text"
-              placeholder="ابحث عن قناة..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-4 pl-12 bg-gray-800 border-2 border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-300"
-              aria-label="Search for a channel"
-            />
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <i className="fas fa-search text-gray-500" aria-hidden="true"></i>
+          <div className="relative w-full max-w-lg mx-auto mb-12 flex items-center gap-2">
+            <div className="relative flex-grow">
+              <input
+                type="text"
+                placeholder="ابحث عن قناة..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-4 pl-12 bg-gray-800 border-2 border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-300"
+                aria-label="Search for a channel"
+              />
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i className="fas fa-search text-gray-500" aria-hidden="true"></i>
+              </div>
             </div>
+            <button
+              onClick={() => setCurrentPage('ai-search')}
+              className="flex-shrink-0 bg-teal-600 text-white w-14 h-14 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center transform hover:scale-110"
+              aria-label="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
+              title="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
+            >
+              <i className="fas fa-robot text-2xl"></i>
+            </button>
           </div>
 
           <div className="space-y-12">
-            {filteredCategories.map((category: Category) => (
+            {filteredCategories.map((category: Category, categoryIndex: number) => (
               <section key={category.title}>
                 <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-300 border-b-2 border-gray-700 pb-2 transition-colors duration-300 hover:text-teal-300">
                   {category.title}
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {category.channels.map((channel: Channel) => (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {category.channels.map((channel: Channel, channelIndex: number) => (
                     <ChannelButton 
                       key={channel.name} 
                       channel={channel} 
-                      animationIndex={animationCounter++} 
+                      animationIndex={categoryChannelCounts[categoryIndex] + channelIndex} 
                     />
                   ))}
                 </div>
