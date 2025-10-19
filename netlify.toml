@@ -10,7 +10,7 @@
 # Build settings
 [build]
   # The command to run to build the site.
-  # We added a placeholder script in package.json to prevent "missing script" errors.
+  # We use the placeholder script from package.json to satisfy the build process.
   command = "npm run build"
 
   # The directory to publish. Your index.html is in the root, so we use "."
@@ -19,5 +19,5 @@
 
 # Serverless Functions settings
 [functions]
-  # The directory where your Netlify Functions are located.
+  # The directory where your Netlify Function (ai-search.ts) is located.
   directory = "netlify/functions"
