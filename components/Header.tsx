@@ -26,9 +26,10 @@ const Header: React.FC = () => {
       setIsLoading(true);
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setProfileImage(base64String);
-        localStorage.setItem('profileImage', base64String);
+        if (typeof reader.result === 'string') {
+          setProfileImage(reader.result);
+          localStorage.setItem('profileImage', reader.result);
+        }
         setIsLoading(false);
       };
       reader.readAsDataURL(file);
