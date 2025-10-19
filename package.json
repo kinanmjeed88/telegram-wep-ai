@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Dependencies for Netlify Functions",
   "scripts": {
-    "build": ":"
+    "build": "echo 'No frontend build step required. Netlify will handle function bundling.'"
   },
   "dependencies": {
     "@google/genai": "0.14.0",
