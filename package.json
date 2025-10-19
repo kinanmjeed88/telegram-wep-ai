@@ -2,6 +2,7 @@
   "name": "techtouch-channels",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "A web application that displays a list of TechTouch's Telegram channels.",
   "scripts": {
     "dev": "vite",
