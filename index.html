@@ -23,14 +23,16 @@
         opacity: 0;
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
+    "@netlify/functions": "https://aistudiocdn.com/@netlify/functions@^5.0.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@0.14.0",
-    "@netlify/functions": "https://aistudiocdn.com/@netlify/functions@^5.0.0"
+    "vite": "https://aistudiocdn.com/vite@^7.1.10",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.4"
   }
 }
 </script>
@@ -38,7 +40,7 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!-- Standard Vite entry point -->
-    <script type="module" src="./index.tsx"></script>
+    <!-- Vite entry point -->
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
