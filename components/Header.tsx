@@ -68,7 +68,7 @@ const Header: React.FC = () => {
           </div>
         )}
       </div>
-      <h1 className="text-4xl md:text-5xl font-extrabold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 [text-shadow:2px_2px_4px_rgba(0,0,0,0.3)]">
+      <h1 className="text-4xl md:text-5xl font-extrabold mt-4 text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-pink-400 to-rose-400 [text-shadow:2px_2px_4px_rgba(0,0,0,0.3)]">
         TechTouch
       </h1>
       <p className="mt-2 text-lg text-gray-400">
