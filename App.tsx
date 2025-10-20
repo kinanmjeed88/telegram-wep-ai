@@ -41,6 +41,22 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white font-sans">
       <main className="container mx-auto px-4 py-6 md:py-8">
         <Header />
+
+        <div className="flex justify-center items-center gap-6 mt-6">
+            <a href="https://www.facebook.com/share/17FBLKFBak/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
+                <i className="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/techtouch0?igsh=MXU4cXNzdjZnNDZqbQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
+                <i className="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/@kinanmajeed" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
+                <i className="fab fa-youtube"></i>
+            </a>
+            <a href="https://www.tiktok.com/@techtouch6?_t=ZT-90iE288eVzC&_r=1" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
+                <i className="fab fa-tiktok"></i>
+            </a>
+        </div>
+        
         <div className="mt-6">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-500">
             قنواتنا على تيليجرام
@@ -111,7 +127,7 @@ const App: React.FC = () => {
         </div>
         <hr className="border-gray-700 my-6" />
         <footer className="text-center text-gray-500 pb-4">
-            <p className="mb-2">
+            <p className="mb-4">
                 <a href={MAIN_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-teal-300 transition-colors duration-300">
                     <i className="fas fa-paper-plane mr-2" aria-hidden="true"></i>
                     انضم إلى قناتنا الرئيسية
