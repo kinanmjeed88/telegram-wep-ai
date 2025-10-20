@@ -53,32 +53,32 @@ const App: React.FC = () => {
                 placeholder="ابحث عن قناة..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-4 pl-12 bg-gray-800 border-2 border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-300"
+                className="w-full p-3 pl-10 bg-gray-800 border-2 border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-300"
                 aria-label="Search for a channel"
               />
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <i className="fas fa-search text-gray-500" aria-hidden="true"></i>
               </div>
             </div>
             <button
               onClick={() => setCurrentPage('ai-search')}
-              className="flex-shrink-0 bg-teal-600 text-white font-semibold h-14 px-4 md:px-6 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
+              className="flex-shrink-0 bg-teal-600 text-white font-semibold h-12 px-3 md:px-4 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
               aria-label="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
               title="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
             >
-              <i className="fas fa-robot text-xl"></i>
-              <span className="text-sm md:text-base">بحث AI</span>
+              <i className="fas fa-robot text-lg"></i>
+              <span className="text-xs md:text-sm">بحث AI</span>
             </button>
             <a
               href="https://t.me/techtouchAI_bot"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 bg-sky-600 text-white font-semibold h-14 px-4 md:px-6 rounded-full hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
+              className="flex-shrink-0 bg-sky-600 text-white font-semibold h-12 px-3 md:px-4 rounded-full hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
               aria-label="بوت الطلبات"
               title="بوت الطلبات @techtouchAI_bot"
             >
-              <i className="fas fa-paper-plane text-xl"></i>
-              <span className="text-sm md:text-base">بوت الطلبات</span>
+              <i className="fas fa-paper-plane text-lg"></i>
+              <span className="text-xs md:text-sm">بوت الطلبات</span>
             </a>
           </div>
 
