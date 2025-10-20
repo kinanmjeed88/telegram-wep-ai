@@ -1,5 +1,5 @@
 import type { Handler } from "@netlify/functions";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, GenerateContentRequest } from "@google/genai";
 
 const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -7,10 +7,10 @@ const handler: Handler = async (event) => {
   }
 
   try {
-    const { userQuery, systemInstruction } = JSON.parse(event.body || '{}');
+    const { userQuery, systemInstruction, mode } = JSON.parse(event.body || '{}');
 
-    if (!userQuery || !systemInstruction) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing userQuery or systemInstruction' }) };
+    if (!userQuery || !systemInstruction || !mode) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Missing userQuery, systemInstruction, or mode' }) };
     }
 
     const apiKey = process.env.API_KEY;
@@ -21,20 +21,27 @@ const handler: Handler = async (event) => {
     
     const ai = new GoogleGenAI({ apiKey });
 
-    const result = await ai.models.generateContent({
+    const request: GenerateContentRequest = {
         model: 'gemini-2.5-flash',
         contents: userQuery,
         config: {
           systemInstruction: systemInstruction,
         },
-    });
+    };
+
+    if (mode === 'general') {
+      request.config.tools = [{ googleSearch: {} }];
+    }
+
+    const result = await ai.models.generateContent(request);
     
     const responseText = result.text;
+    const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
 
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ response: responseText }),
+      body: JSON.stringify({ response: responseText, sources: sources }),
     };
   } catch (error) {
     console.error('Error in Netlify function:', error);
