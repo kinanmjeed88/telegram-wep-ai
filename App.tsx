@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import Header from './components/Header.tsx';
 import ChannelButton from './components/ChannelButton.tsx';
@@ -63,13 +62,24 @@ const App: React.FC = () => {
             </div>
             <button
               onClick={() => setCurrentPage('ai-search')}
-              className="flex-shrink-0 bg-teal-600 text-white font-semibold h-14 px-6 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
+              className="flex-shrink-0 bg-teal-600 text-white font-semibold h-14 px-4 md:px-6 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
               aria-label="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
               title="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
             >
               <i className="fas fa-robot text-xl"></i>
-              <span>بحث AI</span>
+              <span className="text-sm md:text-base">بحث AI</span>
             </button>
+            <a
+              href="https://t.me/techtouchAI_bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 bg-sky-600 text-white font-semibold h-14 px-4 md:px-6 rounded-full hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
+              aria-label="بوت الطلبات"
+              title="بوت الطلبات @techtouchAI_bot"
+            >
+              <i className="fas fa-paper-plane text-xl"></i>
+              <span className="text-sm md:text-base">بوت الطلبات</span>
+            </a>
           </div>
 
           <div className="space-y-6">

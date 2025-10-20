@@ -10,7 +10,6 @@ export const CATEGORIES: Category[] = [
       { name: '💯 مناقشات techtouch', url: 'https://t.me/techtouch6' },
       { name: 'tech Prompt', url: 'https://t.me/kinan_tech' },
       { name: 'techtouch الصور', url: 'https://t.me/techtouch5' },
-      { name: 'ارشفه ملفات', url: 'https://t.me/+lbZCJG9IErxmMGE6' },
       { name: 'العــراق', url: 'https://t.me/techtouch01' },
     ],
   },
