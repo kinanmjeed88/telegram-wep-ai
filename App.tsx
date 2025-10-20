@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import Header from './components/Header.tsx';
 import ChannelButton from './components/ChannelButton.tsx';
@@ -39,14 +40,14 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white font-sans">
-      <main className="container mx-auto px-4 py-8 md:py-16">
+      <main className="container mx-auto px-4 py-6 md:py-8">
         <Header />
-        <div className="mt-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-500">
+        <div className="mt-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-500">
             قنواتنا على تيليجرام
           </h2>
 
-          <div className="relative w-full max-w-lg mx-auto mb-12 flex items-center gap-2">
+          <div className="relative w-full max-w-lg mx-auto mb-6 flex items-center gap-2">
             <div className="relative flex-grow">
               <input
                 type="text"
@@ -71,13 +72,13 @@ const App: React.FC = () => {
             </button>
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-6">
             {filteredCategories.map((category: Category, categoryIndex: number) => (
               <section key={category.title}>
-                <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-300 border-b-2 border-gray-700 pb-2 transition-colors duration-300 hover:text-teal-300">
+                <h3 className="text-xl md:text-2xl font-semibold mb-4 text-gray-300 border-b-2 border-gray-700 pb-2 transition-colors duration-300 hover:text-teal-300">
                   {category.title}
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {category.channels.map((channel: Channel, channelIndex: number) => (
                     <ChannelButton 
                       key={channel.name} 
@@ -98,7 +99,7 @@ const App: React.FC = () => {
             </div>
           )}
         </div>
-        <hr className="border-gray-700 my-12" />
+        <hr className="border-gray-700 my-6" />
         <footer className="text-center text-gray-500 pb-4">
             <p className="mb-2">
                 <a href={MAIN_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-teal-300 transition-colors duration-300">
