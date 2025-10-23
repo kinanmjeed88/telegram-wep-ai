@@ -44,9 +44,8 @@ const AiSearchPage: React.FC<AiSearchPageProps> = ({ onNavigateHome }) => {
     try {
       let systemInstruction = '';
       if (searchMode === 'general') {
-        systemInstruction = `أنت مساعد ذكي متكامل. مهمتك هي الإجابة على أسئلة المستخدم بدقة واختصار باللغة العربية.
-- يجب أن تكون إجاباتك على شكل نقاط تستخدم الشرطة (-) في بدايتها.
-- لا تستخدم النجوم (*) أبداً في تنسيقك.
+        systemInstruction = `أنت مساعد ذكي متكامل. مهمتك هي الإجابة على أسئلة المستخدم باللغة العربية بأسلوب واضح وطبيعي.
+- نسق إجابتك بشكل جيد باستخدام الفقرات والنقاط عند الحاجة لتسهيل القراءة.
 - اعتمد على مصادر البحث الموثوقة المتاحة لك لضمان دقة المعلومات.`;
       } else {
         // App search logic
@@ -109,20 +108,52 @@ ${appList}`;
     if (e.key === 'Enter' && !isLoading) handleSearch();
   };
 
-  const renderResponseWithLinks = (text: string) => {
-    const lines = text.split('\n');
-    return lines.map((line, lineIndex) => {
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const renderResponse = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    const renderLineWithLinks = (line: string, key: React.Key) => {
       const parts = line.split(urlRegex);
       return (
-        <p key={lineIndex} className="text-gray-200 whitespace-pre-wrap font-mono mb-1">
-          {parts.map((part, index) => 
+        <React.Fragment key={key}>
+          {parts.map((part, index) =>
             part.match(urlRegex) ? (
               <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline break-all">{part}</a>
             ) : ( part )
           )}
-        </p>
+        </React.Fragment>
       );
+    };
+
+    const paragraphs = text.split(/\n{2,}/);
+
+    return paragraphs.map((paragraph, pIndex) => {
+      const lines = paragraph.split('\n').filter(line => line.trim() !== '');
+      if (lines.length === 0) return null;
+
+      const listItems = lines.filter(line => /^\s*[-*•]\s/.test(line));
+      const isList = listItems.length > 0 && listItems.length >= lines.length / 2;
+
+      if (isList) {
+        return (
+          <ul key={pIndex} className="list-disc list-inside space-y-2 mb-4 pl-4">
+            {lines.map((line, lIndex) => (
+              <li key={lIndex} className="text-gray-200">
+                {renderLineWithLinks(line.replace(/^\s*[-*•]\s/, ''), `${pIndex}-${lIndex}`)}
+              </li>
+            ))}
+          </ul>
+        );
+      } else {
+        return (
+          <p key={pIndex} className="text-gray-200 mb-4 whitespace-pre-wrap">
+            {paragraph.split('\n').map((line, lIndex) => (
+              <span key={lIndex} className="block">
+                {renderLineWithLinks(line, `${pIndex}-${lIndex}`)}
+              </span>
+            ))}
+          </p>
+        );
+      }
     });
   };
 
@@ -176,7 +207,7 @@ ${appList}`;
                     {error && <p className="text-sky-400 mt-4 text-center">{error}</p>}
                     {(response || sources.length > 0) && (
                       <div className="mt-6 p-4 bg-gray-900/70 border border-gray-700 rounded-lg max-h-[50vh] overflow-y-auto">
-                        {response && <div>{renderResponseWithLinks(response)}</div>}
+                        {response && <div>{renderResponse(response)}</div>}
                         {sources.length > 0 && (
                           <div className="mt-4 pt-4 border-t border-gray-600">
                             <h4 className="text-gray-300 font-semibold mb-2">المصادر:</h4>
