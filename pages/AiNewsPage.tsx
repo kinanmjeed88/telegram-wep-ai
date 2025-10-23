@@ -18,12 +18,24 @@ const AiNewsPage: React.FC<AiNewsPageProps> = ({ onNavigateHome }) => {
         const response = await fetch('/.netlify/functions/ai-news', {
           method: 'POST',
         });
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Server error: ${response.statusText}`);
+          let errorMsg = `فشل الطلب: ${response.status} ${response.statusText}`;
+          try {
+            // Attempt to parse a JSON error body from the function
+            const errorData = await response.json();
+            errorMsg = errorData.error || errorMsg;
+          } catch (jsonError) {
+            // If the body isn't JSON, it might be an HTML error from the gateway (e.g., timeout)
+            console.error("Non-JSON error response from server:", await response.text().catch(() => 'Could not read error body'));
+            errorMsg = 'فشل الاتصال بالخادم. قد يكون السبب انقطاع الشبكة أو مشكلة في الخادم.';
+          }
+          throw new Error(errorMsg);
         }
+        
         const data: AiNewsPost[] = await response.json();
         setNews(data);
+
       } catch (e: any) {
         console.error(e);
         setError(`حدث خطأ أثناء جلب الأخبار: ${e.message}`);

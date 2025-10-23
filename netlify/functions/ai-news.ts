@@ -40,15 +40,33 @@ async function generateNewPosts(ai: GoogleGenAI, existingTitles: string[]): Prom
 
   const result = await ai.models.generateContent(request);
   const responseText = result.text;
-
+  
+  let jsonString = "";
+  // Attempt to extract JSON from a markdown code block first
   const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
-  if (!jsonMatch || !jsonMatch[1]) {
-    console.error("Failed to extract JSON from model response:", responseText);
-    throw new Error("لم يتمكن النموذج من تنسيق الاستجابة بشكل صحيح. حاول مرة أخرى.");
+  if (jsonMatch && jsonMatch[1]) {
+      jsonString = jsonMatch[1];
+  } else {
+      // Fallback: If no markdown block is found, try to find a JSON object/array in the text.
+      const jsonLikeMatch = responseText.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
+      if (jsonLikeMatch && jsonLikeMatch[0]) {
+          jsonString = jsonLikeMatch[0];
+      } else {
+          console.error("Could not find JSON block or JSON-like structure in model response:", responseText);
+          throw new Error("لم يتمكن النموذج من تنسيق الاستجابة بشكل صحيح.");
+      }
   }
 
-  const jsonString = jsonMatch[1];
-  return JSON.parse(jsonString);
+  try {
+      return JSON.parse(jsonString);
+  } catch (e) {
+      console.error("Failed to parse extracted JSON string.", {
+          error: e,
+          jsonString: jsonString,
+          fullResponse: responseText,
+      });
+      throw new Error("فشل تحليل البيانات المستلمة من النموذج.");
+  }
 }
 
 const handler: Handler = async (event) => {
