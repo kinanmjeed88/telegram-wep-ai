@@ -1,16 +1,22 @@
-# إعدادات البناء لتطبيق صفحة واحدة يعتمد على Vite
+# Netlify configuration file
+
+# Build settings: Specifies the command to build the site and the directory where the built files are located.
 [build]
   command = "npm run build"
   publish = "dist"
 
-# قاعدة إعادة التوجيه لتطبيقات الصفحة الواحدة للتعامل مع التوجيه من جانب العميل
+# Redirects and rewrites: This rule is essential for Single Page Applications (SPAs).
+# It ensures that any request that doesn't match a static file is redirected to index.html,
+# allowing the client-side router to handle the path.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# إعدادات الدوال التي لا تحتاج إلى خادم (Serverless Functions)
+# Serverless Functions configuration
 [functions]
-  # زيادة مهلة التنفيذ لجميع الدوال إلى 25 ثانية (الافتراضي هو 10 ثوانٍ)
-  # هذا يمنع أخطاء البوابة (gateway errors) للمهام التي تستغرق وقتًا أطول مثل توليد استجابات الذكاء الاصطناعي.
-  timeout = 25
+  # Increase the timeout for the specified function.
+  # The default timeout is 10 seconds. We're increasing it to 25 seconds
+  # to prevent gateway timeout errors when the Gemini API takes longer to respond.
+  [functions."ai-news"]
+    timeout = 25
