@@ -2,12 +2,15 @@ import React, { useState, useMemo } from 'react';
 import Header from './components/Header.tsx';
 import ChannelButton from './components/ChannelButton.tsx';
 import AiSearchPage from './pages/AiSearchPage.tsx';
+import AiNewsPage from './pages/AiNewsPage.tsx'; // Import the new news page
 import { CATEGORIES, MAIN_CHANNEL_URL } from './constants.ts';
 import type { Category, Channel } from './types.ts';
 
+type Page = 'home' | 'ai-search' | 'ai-news';
+
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState<Page>('home');
 
   const filteredCategories = useMemo(() => {
     if (!searchTerm.trim()) {
@@ -37,6 +40,10 @@ const App: React.FC = () => {
     return <AiSearchPage onNavigateHome={() => setCurrentPage('home')} />;
   }
 
+  if (currentPage === 'ai-news') {
+    return <AiNewsPage onNavigateHome={() => setCurrentPage('home')} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white font-sans">
       <main className="container mx-auto px-4 py-6 md:py-8">
@@ -57,6 +64,17 @@ const App: React.FC = () => {
             </a>
         </div>
         
+        <div className="mt-8 mb-6">
+            <button
+              onClick={() => setCurrentPage('ai-news')}
+              className="w-full max-w-lg mx-auto bg-gradient-to-r from-sky-500 to-teal-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-cyan-500/50 focus:outline-none focus:ring-4 focus:ring-cyan-300 transition-all duration-300 flex items-center justify-center gap-3 text-lg transform hover:-translate-y-1"
+              aria-label="اطلع على آخر أخبار الذكاء الاصطناعي"
+            >
+              <i className="fas fa-newspaper"></i>
+              <span>آخر أخبار الذكاء الاصطناعي</span>
+            </button>
+        </div>
+
         <div className="mt-6">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-500">
             قنواتنا على تيليجرام
