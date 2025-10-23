@@ -53,13 +53,15 @@ const handler: Handler = async (event) => {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    console.error("API_KEY environment variable not set.");
+    return { statusCode: 500, body: JSON.stringify({ error: 'Server configuration error: Missing API key.' }) };
+  }
+  const ai = new GoogleGenAI({ apiKey });
+
   try {
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      console.error("API_KEY environment variable not set.");
-      return { statusCode: 500, body: JSON.stringify({ error: 'Server configuration error: Missing API key.' }) };
-    }
-    
+    // Attempt to use Netlify Blobs for persistent, shared news
     const store = getStore("ai_news_archive");
     const metadata = await store.get("metadata", { type: "json" });
 
@@ -69,9 +71,7 @@ const handler: Handler = async (event) => {
     let allNews: AiNewsPost[] = await store.get("all_news", { type: "json" }) || [];
 
     if (lastUpdateDate !== today) {
-        const ai = new GoogleGenAI({ apiKey });
         const newPosts = await generateNewPosts(ai);
-
         // Prepend new posts to the existing list to show newest first
         allNews.unshift(...newPosts);
 
@@ -85,7 +85,29 @@ const handler: Handler = async (event) => {
       headers: { "Content-Type": "application/json; charset=utf-8" },
       body: JSON.stringify(allNews),
     };
-  } catch (error) {
+  } catch (error: any) {
+    // Check if the error is the specific blob configuration error
+    if (error.message && error.message.includes("The environment has not been configured to use Netlify Blobs")) {
+      console.warn("Netlify Blobs not configured. Falling back to stateless mode.");
+      // Fallback: Generate news without storing it. This allows the feature to work even if blobs aren't configured.
+      try {
+        const newPosts = await generateNewPosts(ai);
+        return {
+          statusCode: 200,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify(newPosts),
+        };
+      } catch (generationError: any) {
+        console.error('Error in fallback generation (ai-news):', generationError);
+        const errorMessage = generationError instanceof Error ? generationError.message : 'An unknown error occurred.';
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ error: `An internal error occurred during fallback generation: ${errorMessage}` }),
+        };
+      }
+    }
+
+    // Handle other, unexpected errors
     console.error('Error in Netlify function (ai-news):', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
     return {
