@@ -5,11 +5,11 @@ import type { AiNewsPost } from '../../types.ts';
 
 // Helper function to generate news, extracted from the main handler
 async function generateNewPosts(ai: GoogleGenAI, existingTitles: string[]): Promise<AiNewsPost[]> {
-  const systemInstruction = `أنت واجهة برمجة تطبيقات (API) صامتة. مهمتك هي البحث عن 3 إلى 5 أخبار هامة وجديدة حول الذكاء الاصطناعي وتقديمها كـ JSON.
+  const systemInstruction = `تصرف كواجهة برمجة تطبيقات صامتة. مهمتك الوحيدة هي العثور على 3 إلى 5 أخبار هامة وحديثة حول الذكاء الاصطناعي وإرجاعها كسلسلة JSON صالحة.
 
-**قواعد التنسيق الصارمة:**
-1.  يجب أن تكون الاستجابة الكاملة عبارة عن JSON صالح فقط.
-2.  لا تضف أي نص توضيحي أو تمهيدي أو ختامي. لا تستخدم Markdown.
+**قواعد تنسيق صارمة:**
+1.  يجب أن تكون استجابتك الكاملة عبارة عن سلسلة JSON صالحة.
+2.  لا تقم بتضمين أي نص توضيحي أو مقدمات أو استنتاجات. لا تستخدم تنسيق Markdown مثل \`\`\`json.
 3.  يجب أن تبدأ الاستجابة مباشرة بالرمز '[' وتنتهي بالرمز ']'.
 
 **قواعد المحتوى:**
