@@ -4,23 +4,26 @@ import { getStore } from "@netlify/blobs";
 import type { AiNewsPost } from '../../types.ts';
 
 // Helper function to generate news, extracted from the main handler
-async function generateNewPosts(ai: GoogleGenAI): Promise<AiNewsPost[]> {
-  const systemInstruction = `أنت صحفي تقني متخصص في الذكاء الاصطناعي. مهمتك هي البحث عن آخر 3 إلى 5 أخبار هامة حول الذكاء الاصطناعي خلال الـ 48 ساعة الماضية.
+async function generateNewPosts(ai: GoogleGenAI, existingTitles: string[]): Promise<AiNewsPost[]> {
+  const systemInstruction = `أنت صحفي تقني متخصص في الذكاء الاصطناعي. مهمتك هي البحث عن 3 إلى 5 أخبار هامة وجديدة حول الذكاء الاصطناعي خلال الـ 48 ساعة الماضية.
     يجب عليك تنسيق الإجابة بالكامل ككتلة JSON واحدة (code block) تحتوي على مصفوفة من الكائنات. لا تضف أي نص تمهيدي أو ختامي خارج كتلة JSON.
-    يجب أن يتبع كل كائن في المصفوفة البنية التالية بدقة:
-    - "title": (string) عنوان جذاب ومختصر للخبر.
-    - "summary": (string) ملخص مفصل للخبر يشرح أهم النقاط بوضوح.
-    - "sources": (array) مصفوفة تحتوي على كائنين على الأقل للمصادر الموثوقة. كل كائن مصدر يجب أن يحتوي على "title" (string) و "uri" (string).
-    
+
+    **قواعد صارمة للمحتوى:**
+    1.  **تجنب التكرار:** لا تقم بتوليد أخبار بعناوين أو مواضيع مشابهة للعناوين الموجودة في هذه القائمة: [${existingTitles.join(', ')}]. ابحث عن مواضيع جديدة تمامًا.
+    2.  **التنسيق:** يجب أن يتبع كل كائن في المصفوفة البنية التالية بدقة:
+        - "title": (string) عنوان جذاب ومختصر للخبر.
+        - "summary": (string) ملخص للخبر على شكل نقاط واضحة. يجب أن تبدأ كل نقطة بشرطة "-".
+        - "sources": (array) مصفوفة تحتوي على مصدرين (2) موثوقين ومختصرين بالضبط. كل مصدر يجب أن يكون كائنًا يحتوي على "title" (string) و "uri" (string).
+
     مثال على البنية المطلوبة:
     \`\`\`json
     [
       {
-        "title": "عنوان الخبر الأول",
-        "summary": "ملخص تفصيلي للخبر الأول...",
+        "title": "إطلاق نموذج لغوي جديد يتفوق على GPT-4",
+        "summary": "- تم تطوير النموذج بواسطة شركة ناشئة في مجال الذكاء الاصطناعي.\\n- يستخدم بنية معمارية هجينة لتحسين الأداء.\\n- أظهر نتائج متفوقة في مهام المنطق والاستدلال.",
         "sources": [
-          { "title": "اسم المصدر 1", "uri": "https://example.com/news1" },
-          { "title": "اسم المصدر 2", "uri": "https://example.com/source2" }
+          { "title": "TechCrunch", "uri": "https://techcrunch.com/some-article" },
+          { "title": "Wired", "uri": "https://www.wired.com/another-article" }
         ]
       }
     ]
@@ -28,7 +31,7 @@ async function generateNewPosts(ai: GoogleGenAI): Promise<AiNewsPost[]> {
 
   const request: GenerateContentRequest = {
       model: 'gemini-2.5-flash',
-      contents: "ابحث وقدم لي آخر أخبار الذكاء الاصطناعي.",
+      contents: "ابحث وقدم لي آخر أخبار الذكاء الاصطناعي، مع تجنب المواضيع المذكورة سابقًا.",
       config: {
         systemInstruction: systemInstruction,
         tools: [{ googleSearch: {} }],
@@ -61,7 +64,6 @@ const handler: Handler = async (event) => {
   const ai = new GoogleGenAI({ apiKey });
 
   try {
-    // Attempt to use Netlify Blobs for persistent, shared news
     const store = getStore("ai_news_archive");
     const metadata = await store.get("metadata", { type: "json" });
 
@@ -71,12 +73,17 @@ const handler: Handler = async (event) => {
     let allNews: AiNewsPost[] = await store.get("all_news", { type: "json" }) || [];
 
     if (lastUpdateDate !== today) {
-        const newPosts = await generateNewPosts(ai);
-        // Prepend new posts to the existing list to show newest first
-        allNews.unshift(...newPosts);
+        const existingTitles = allNews.map(news => news.title);
+        const newPosts = await generateNewPosts(ai, existingTitles);
 
-        // Save the updated list and metadata back to the blob store
-        await store.setJSON("all_news", allNews);
+        const existingTitlesSet = new Set(existingTitles.map(t => t.trim().toLowerCase()));
+        const uniqueNewPosts = newPosts.filter(post => !existingTitlesSet.has(post.title.trim().toLowerCase()));
+        
+        if (uniqueNewPosts.length > 0) {
+            allNews.unshift(...uniqueNewPosts);
+            await store.setJSON("all_news", allNews);
+        }
+
         await store.setJSON("metadata", { lastUpdate: new Date().toISOString() });
     }
 
@@ -86,12 +93,10 @@ const handler: Handler = async (event) => {
       body: JSON.stringify(allNews),
     };
   } catch (error: any) {
-    // Check if the error is the specific blob configuration error
     if (error.message && error.message.includes("The environment has not been configured to use Netlify Blobs")) {
       console.warn("Netlify Blobs not configured. Falling back to stateless mode.");
-      // Fallback: Generate news without storing it. This allows the feature to work even if blobs aren't configured.
       try {
-        const newPosts = await generateNewPosts(ai);
+        const newPosts = await generateNewPosts(ai, []);
         return {
           statusCode: 200,
           headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -107,7 +112,6 @@ const handler: Handler = async (event) => {
       }
     }
 
-    // Handle other, unexpected errors
     console.error('Error in Netlify function (ai-news):', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
     return {

@@ -75,8 +75,17 @@ const AiNewsPage: React.FC<AiNewsPageProps> = ({ onNavigateHome }) => {
                   className="bg-gray-800/50 border border-gray-700 rounded-xl shadow-lg p-6 channel-button-animation"
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
-                  <h2 className="text-xl md:text-2xl font-bold text-teal-300 mb-3">{post.title}</h2>
-                  <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">{post.summary}</p>
+                  <h2 className="text-xl md:text-2xl font-bold text-teal-300 mb-4">{post.title}</h2>
+                  <ul className="list-none space-y-2 pl-1">
+                    {post.summary.split('\n').map((point, pointIndex) => (
+                      point.trim() && (
+                        <li key={pointIndex} className="text-gray-300 leading-relaxed flex items-start">
+                          <span className="text-teal-400 mr-3 mt-1 shrink-0">◆</span>
+                          <span>{point.replace(/^-/, '').trim()}</span>
+                        </li>
+                      )
+                    ))}
+                  </ul>
                   
                   {post.sources && post.sources.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-700">
