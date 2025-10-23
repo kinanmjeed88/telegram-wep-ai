@@ -1,22 +1,43 @@
-# Netlify configuration file
-
-# Build settings: Specifies the command to build the site and the directory where the built files are located.
+# ==============================================================================
+# اعدادات البناء (Build Settings)
+# ==============================================================================
+# هذا القسم يخبر Netlify بكيفية بناء موقعك.
 [build]
-  command = "npm run build"
+  # أمر البناء الذي سيتم تنفيذه.
+  # بناءً على ملف package.json، هذا هو الأمر الصحيح.
+  command = "vite build"
+
+  # المجلد الذي يحتوي على الملفات النهائية بعد البناء.
+  # المجلد الافتراضي لمخرجات Vite هو "dist".
   publish = "dist"
 
-# Redirects and rewrites: This rule is essential for Single Page Applications (SPAs).
-# It ensures that any request that doesn't match a static file is redirected to index.html,
-# allowing the client-side router to handle the path.
+  # المجلد الذي يحتوي على وظائف الخادم (Netlify Functions).
+  functions = "netlify/functions"
+
+# ==============================================================================
+# إعدادات إعادة التوجيه (Redirects)
+# ==============================================================================
+# هذا القسم ضروري لتطبيقات الصفحة الواحدة (SPAs) مثل React.
+# يضمن أن جميع الطلبات تذهب إلى ملف index.html الرئيسي،
+# مما يسمح لـ React بمعالجة التوجيه من جانب العميل.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Serverless Functions configuration
-[functions]
-  # Increase the timeout for the specified function.
-  # The default timeout is 10 seconds. We're increasing it to 25 seconds
-  # to prevent gateway timeout errors when the Gemini API takes longer to respond.
-  [functions."ai-news"]
-    timeout = 25
+# ==============================================================================
+# إعدادات وظائف الخادم (Functions Settings)
+# ==============================================================================
+# هذا القسم يسمح بتخصيص سلوك وظائف الخادم الفردية.
+
+# إعدادات وظيفة البحث بالذكاء الاصطناعي (ai-search).
+[functions."ai-search"]
+  # زيادة مهلة التنفيذ إلى 25 ثانية.
+  # القيمة الافتراضية هي 10 ثواني، وهو وقت قد لا يكون كافيًا
+  # لاستجابات الذكاء الاصطناعي، مما قد يسبب أخطاء "timeout".
+  timeout = 25
+
+# إعدادات وظيفة أخبار الذكاء الاصطناعي (ai-news).
+[functions."ai-news"]
+  # زيادة مهلة التنفيذ إلى 25 ثانية لنفس السبب أعلاه.
+  timeout = 25
