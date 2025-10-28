@@ -1,5 +1,5 @@
 {
-  "name": "TechTouch Channels",
-  "description": "A web application that displays a list of TechTouch's Telegram channels. It features a profile section with an uploadable image and a grid of professionally styled buttons linking to each channel.",
+  "name": "TechTouch Hugo Site",
+  "description": "A Hugo-based static site for TechTouch channels and posts, managed with a Git-based CMS.",
   "requestFramePermissions": []
 }
