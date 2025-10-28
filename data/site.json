@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "name": "اسمك هنا",
+    "bio": "اكتب سيرتك الذاتية هنا."
+  },
+  "settings": {
+    "siteName": "TechTouch Channels",
+    "announcement": "مرحباً بك في موقعي!",
+    "social": {
+      "telegram": "https://t.me/yourusername"
+    }
+  }
+}

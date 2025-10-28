@@ -1,0 +1,51 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "static/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "settings"
+    label: "إعدادات الموقع"
+    files:
+      - file: "data/site.json"
+        label: "الإعدادات والملف الشخصي"
+        name: "site_settings"
+        fields:
+          - { label: "الملف الشخصي", name: "profile", widget: "object", fields: [
+              { label: "الاسم", name: "name", widget: "string" },
+              { label: "السيرة الذاتية", name: "bio", widget: "text" }
+            ] }
+          - { label: "الإعدادات العامة", name: "settings", widget: "object", fields: [
+              { label: "اسم الموقع", name: "siteName", widget: "string" },
+              { label: "شريط الإعلانات", name: "announcement", widget: "string" },
+              { label: "روابط التواصل", name: "social", widget: "object", fields: [
+                  { label: "رابط تيليجرام", name: "telegram", widget: "string" }
+                ] }
+            ] }
+      - file: "data/channelCategories.json"
+        label: "فئات القنوات"
+        name: "channel_categories"
+        fields:
+          - label: "الفئات"
+            name: "categories"
+            widget: "list"
+            fields:
+              - { label: "اسم الفئة", name: "name", widget: "string" }
+              - label: "القنوات"
+                name: "channels"
+                widget: "list"
+                fields:
+                  - { label: "اسم القناة", name: "name", widget: "string" }
+                  - { label: "رابط القناة", name: "url", widget: "string" }
+
+  - name: "posts"
+    label: "المنشورات"
+    folder: "content/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string" }
+      - { label: "تاريخ النشر", name: "date", widget: "datetime" }
+      - { label: "المحتوى", name: "body", widget: "markdown" }

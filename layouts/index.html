@@ -1,0 +1,8 @@
+{{ define "main" }}
+<div class="profile-card">
+    <img src="/images/profile-placeholder.png" alt="Profile Picture" class="profile-pic">
+    <h2>{{ .Site.Data.site.profile.name }}</h2>
+    <p>{{ .Site.Data.site.profile.bio }}</p>
+    <a href="{{ .Site.Data.site.settings.social.telegram }}" class="button" target="_blank" rel="noopener noreferrer">تواصل معي على تيليجرام</a>
+</div>
+{{ end }}

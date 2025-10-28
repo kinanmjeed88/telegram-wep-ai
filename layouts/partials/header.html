@@ -1,0 +1,13 @@
+<header>
+    <div class="announcement-bar">
+        {{ .Site.Data.site.settings.announcement }}
+    </div>
+    <nav>
+        <a href="/" class="site-title">{{ .Site.Data.site.settings.siteName }}</a>
+        <ul>
+            {{ range .Site.Menus.main }}
+            <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+            {{ end }}
+        </ul>
+    </nav>
+</header>

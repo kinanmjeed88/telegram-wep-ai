@@ -1,0 +1,17 @@
+{{ define "main" }}
+<article class="page">
+    <h1>{{ .Title }}</h1>
+    <div class="channels-container">
+        {{ range .Site.Data.channelCategories.categories }}
+        <div class="channel-category">
+            <h3>{{ .name }}</h3>
+            <div class="channel-list">
+                {{ range .channels }}
+                <a href="{{ .url }}" class="channel-button" target="_blank" rel="noopener noreferrer">{{ .name }}</a>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</article>
+{{ end }}
