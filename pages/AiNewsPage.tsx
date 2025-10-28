@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import type { AiNewsPost } from '../types.ts';
 
 interface AiNewsPageProps {
@@ -66,67 +64,6 @@ const AiNewsPage: React.FC<AiNewsPageProps> = ({ onNavigateHome }) => {
     fetchNews();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run only on component mount
-
-  const downloadAsPdf = (post: AiNewsPost) => {
-    const pdfElement = document.createElement('div');
-    // Styling for the PDF content
-    pdfElement.style.position = 'absolute';
-    pdfElement.style.left = '-9999px';
-    pdfElement.style.width = '794px'; // A4 width in pixels at 96 DPI
-    pdfElement.style.padding = '40px';
-    pdfElement.style.direction = 'rtl';
-    pdfElement.style.textAlign = 'right';
-    pdfElement.style.fontFamily = 'Arial, sans-serif'; // Use a common font
-    pdfElement.style.fontSize = '16px';
-    pdfElement.style.color = 'black';
-    pdfElement.style.backgroundColor = 'white';
-    pdfElement.style.lineHeight = '1.6';
-    pdfElement.style.boxSizing = 'border-box';
-
-    const sourcesHtml = post.sources && post.sources.length > 0 ? `
-      <h3 style="color: #333; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 18px;">المصادر:</h3>
-      <ul style="list-style-type: none; padding: 0; margin: 0;">
-        ${post.sources.map(s => `<li style="margin-bottom: 5px;"><a href="${s.uri}" style="color: #0066cc; text-decoration: none; word-break: break-all;">${s.title || s.uri}</a></li>`).join('')}
-      </ul>
-    ` : '';
-
-    pdfElement.innerHTML = `
-      <div style="direction: rtl; text-align: right;">
-        <h1 style="color: #0d9488; font-size: 24px;">${post.title}</h1>
-        <p style="white-space: pre-wrap; margin-top: 16px;">${post.summary}</p>
-        ${sourcesHtml}
-      </div>
-    `;
-
-    document.body.appendChild(pdfElement);
-
-    html2canvas(pdfElement, {
-      scale: 2, // Increase resolution
-      useCORS: true,
-      windowWidth: pdfElement.scrollWidth,
-      windowHeight: pdfElement.scrollHeight
-    }).then(canvas => {
-      document.body.removeChild(pdfElement);
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height] // Use canvas dimensions for PDF size
-      });
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-      
-      const fileName = `${post.title.replace(/[^a-z0-9-_\u0600-\u06FF]/gi, '_').slice(0, 50)}.pdf`;
-      pdf.save(fileName);
-    }).catch(err => {
-        console.error("Failed to generate PDF:", err);
-        alert('عذراً، حدث خطأ أثناء إنشاء ملف PDF.');
-        if (document.body.contains(pdfElement)) {
-          document.body.removeChild(pdfElement);
-        }
-    });
-  };
 
   const sharePost = async (post: AiNewsPost) => {
     const sourcesText = post.sources && post.sources.length > 0
@@ -213,9 +150,6 @@ const AiNewsPage: React.FC<AiNewsPageProps> = ({ onNavigateHome }) => {
                  <div className="mt-5 pt-4 border-t border-gray-700 flex items-center justify-end gap-3">
                     <button onClick={() => sharePost(post)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-colors duration-200">
                       <i className="fas fa-share-alt"></i>مشاركة
-                    </button>
-                    <button onClick={() => downloadAsPdf(post)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-sky-600 text-white rounded-lg hover:bg-sky-500 transition-colors duration-200">
-                      <i className="fas fa-file-pdf"></i>تنزيل PDF
                     </button>
                   </div>
               </article>

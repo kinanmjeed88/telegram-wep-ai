@@ -1,157 +1,153 @@
-import React, { useState, useMemo } from 'react';
-import Header from './components/Header.tsx';
-import ChannelButton from './components/ChannelButton.tsx';
-import AiSearchPage from './pages/AiSearchPage.tsx';
-import AiNewsPage from './pages/AiNewsPage.tsx'; // Import the new news page
-import { CATEGORIES, MAIN_CHANNEL_URL } from './constants.ts';
-import type { Category, Channel } from './types.ts';
 
-type Page = 'home' | 'ai-search' | 'ai-news';
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header.tsx';
+import AiSearchPage from './pages/AiSearchPage.tsx';
+import AiNewsPage from './pages/AiNewsPage.tsx';
+import FeaturesPage from './pages/FeaturesPage.tsx';
+import ChannelsPage from './pages/ChannelsPage.tsx';
+import AiImagePage from './pages/AiImagePage.tsx';
+import AdminPage from './pages/AdminPage.tsx';
+import PostsPage from './pages/PostsPage.tsx';
+import type { SiteData } from './types.ts';
+
+type Page = 'home' | 'ai-search' | 'ai-news' | 'features' | 'channels' | 'ai-image' | 'admin' | 'posts';
 
 const App: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [siteData, setSiteData] = useState<SiteData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredCategories = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return CATEGORIES;
-    }
-    return CATEGORIES.map(category => {
-      const filteredChannels = category.channels.filter(channel =>
-        channel.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      return { ...category, channels: filteredChannels };
-    }).filter(category => category.channels.length > 0);
-  }, [searchTerm]);
+  useEffect(() => {
+    const fetchSiteData = async () => {
+      try {
+        const response = await fetch('/.netlify/functions/data');
+        if (!response.ok) {
+          throw new Error('Failed to fetch site data');
+        }
+        const data = await response.json();
+        setSiteData(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchSiteData();
+
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#/', '');
+      if (hash === 'admin') {
+        setCurrentPage('admin');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // Check hash on initial load
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
+  const navigate = (page: Page) => {
+    setCurrentPage(page);
+    window.location.hash = `/${page}`;
+    window.scrollTo(0, 0);
+  };
   
-  const hasResults = filteredCategories.some(cat => cat.channels.length > 0);
+  const navigateHome = () => {
+    setCurrentPage('home');
+    window.location.hash = '';
+     window.scrollTo(0, 0);
+  }
 
-  const categoryChannelCounts = useMemo(() => {
-    const counts: number[] = [0];
-    let total = 0;
-    for (let i = 0; i < filteredCategories.length - 1; i++) {
-      total += filteredCategories[i].channels.length;
-      counts.push(total);
-    }
-    return counts;
-  }, [filteredCategories]);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <i className="fas fa-spinner fa-spin text-4xl text-teal-400"></i>
+      </div>
+    );
+  }
 
+  if (error || !siteData) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white p-4">
+        <i className="fas fa-exclamation-triangle text-4xl text-sky-400 mb-4"></i>
+        <h2 className="text-2xl mb-2">حدث خطأ</h2>
+        <p className="text-center">{error || 'لم يتم العثور على بيانات الموقع.'}</p>
+      </div>
+    );
+  }
+
+  if (currentPage === 'admin') {
+    return <AdminPage onNavigateHome={navigateHome} />;
+  }
   if (currentPage === 'ai-search') {
-    return <AiSearchPage onNavigateHome={() => setCurrentPage('home')} />;
+    return <AiSearchPage onNavigateHome={navigateHome} />;
+  }
+  if (currentPage === 'ai-news') {
+    return <AiNewsPage onNavigateHome={navigateHome} />;
+  }
+  if (currentPage === 'features') {
+    return <FeaturesPage 
+      onNavigateHome={navigateHome}
+      onNavigateAiSearch={() => navigate('ai-search')}
+      onNavigateAiNews={() => navigate('ai-news')}
+      onNavigateAiImage={() => navigate('ai-image')}
+    />;
+  }
+  if (currentPage === 'channels') {
+    return <ChannelsPage onNavigateHome={navigateHome} channelCategories={siteData.channelCategories} />;
+  }
+  if (currentPage === 'ai-image') {
+    return <AiImagePage onNavigateHome={navigateHome} />;
+  }
+  if (currentPage === 'posts') {
+    return <PostsPage onNavigateHome={navigateHome} posts={siteData.posts} postCategories={siteData.postCategories} />;
   }
 
-  if (currentPage === 'ai-news') {
-    return <AiNewsPage onNavigateHome={() => setCurrentPage('home')} />;
-  }
+  const { settings, profile } = siteData;
+  const socialLinks = settings.socialLinks;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white font-sans">
+      {settings.announcementText && (
+        <div style={{ backgroundColor: '#1f2937' }} className="text-center py-2 px-4 text-sm">
+          <a href={settings.announcementLink || '#'} target="_blank" rel="noopener noreferrer" className="hover:underline">
+            {settings.announcementText}
+          </a>
+        </div>
+      )}
       <main className="container mx-auto px-4 py-6 md:py-8">
-        <Header />
+        <Header siteName={settings.siteName} profile={profile} />
 
         <div className="flex justify-center items-center gap-6 mt-6">
-            <a href="https://www.facebook.com/share/17FBLKFBak/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
-                <i className="fab fa-facebook"></i>
-            </a>
-            <a href="https://www.instagram.com/techtouch0?igsh=MXU4cXNzdjZnNDZqbQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
-                <i className="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.youtube.com/@kinanmajeed" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
-                <i className="fab fa-youtube"></i>
-            </a>
-            <a href="https://www.tiktok.com/@techtouch6?_t=ZT-90iE288eVzC&_r=1" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110">
-                <i className="fab fa-tiktok"></i>
-            </a>
+          {socialLinks.facebook && <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110"><i className="fab fa-facebook"></i></a>}
+          {socialLinks.instagram && <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110"><i className="fab fa-instagram"></i></a>}
+          {socialLinks.youtube && <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110"><i className="fab fa-youtube"></i></a>}
+          {socialLinks.tiktok && <a href={socialLinks.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-gray-400 hover:text-white transition-colors duration-300 text-2xl transform hover:scale-110"><i className="fab fa-tiktok"></i></a>}
         </div>
         
-        <div className="mt-8 mb-6">
-            <button
-              onClick={() => setCurrentPage('ai-news')}
-              className="w-full max-w-lg mx-auto bg-gradient-to-r from-sky-500 to-teal-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-cyan-500/50 focus:outline-none focus:ring-4 focus:ring-cyan-300 transition-all duration-300 flex items-center justify-center gap-3 text-lg transform hover:-translate-y-1"
-              aria-label="اطلع على آخر أخبار الذكاء الاصطناعي"
-            >
-              <i className="fas fa-newspaper"></i>
-              <span>آخر أخبار الذكاء الاصطناعي</span>
-            </button>
+        <div className="mt-8 mb-6 max-w-lg mx-auto space-y-4">
+          <button onClick={() => navigate('features')} className="w-full bg-gradient-to-r from-sky-500 to-teal-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-cyan-500/50 focus:outline-none focus:ring-4 focus:ring-cyan-300 transition-all duration-300 flex items-center justify-center gap-3 text-lg transform hover:-translate-y-1">
+            <i className="fas fa-star"></i><span>✨ الميزات الرئيسية AI</span>
+          </button>
+          <button onClick={() => navigate('posts')} className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-indigo-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-300 flex items-center justify-center gap-3 text-lg transform hover:-translate-y-1">
+            <i className="fas fa-pen-alt"></i><span>المنشورات</span>
+          </button>
+          <button onClick={() => navigate('channels')} className="w-full bg-gradient-to-r from-gray-700 to-gray-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-gray-600/50 hover:from-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-300 flex items-center justify-center gap-3 text-lg transform hover:-translate-y-1">
+            <i className="fab fa-telegram-plane"></i><span>قنواتنا على التيليكرام</span>
+          </button>
         </div>
 
-        <div className="mt-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-500">
-            قنواتنا على تيليجرام
-          </h2>
-
-          <div className="relative w-full max-w-lg mx-auto mb-6 flex items-center gap-2">
-            <div className="relative flex-grow">
-              <input
-                type="text"
-                placeholder="ابحث عن قناة..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-3 pl-10 bg-gray-800 border-2 border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-300"
-                aria-label="Search for a channel"
-              />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i className="fas fa-search text-gray-500" aria-hidden="true"></i>
-              </div>
-            </div>
-            <button
-              onClick={() => setCurrentPage('ai-search')}
-              className="flex-shrink-0 bg-teal-600 text-white font-semibold h-12 px-3 md:px-4 rounded-full hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-teal-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
-              aria-label="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
-              title="ابحث عن تطبيق بمساعدة الذكاء الاصطناعي"
-            >
-              <i className="fas fa-robot text-lg"></i>
-              <span className="text-xs md:text-sm">بحث AI</span>
-            </button>
-            <a
-              href="https://t.me/techtouchAI_bot"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 bg-sky-600 text-white font-semibold h-12 px-3 md:px-4 rounded-full hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105"
-              aria-label="بوت الطلبات"
-              title="بوت الطلبات @techtouchAI_bot"
-            >
-              <i className="fas fa-paper-plane text-lg"></i>
-              <span className="text-xs md:text-sm">بوت الطلبات</span>
-            </a>
-          </div>
-
-          <div className="space-y-6">
-            {filteredCategories.map((category: Category, categoryIndex: number) => (
-              <section key={category.title}>
-                <h3 className="text-xl md:text-2xl font-semibold mb-4 text-gray-300 border-b-2 border-gray-700 pb-2 transition-colors duration-300 hover:text-teal-300">
-                  {category.title}
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {category.channels.map((channel: Channel, channelIndex: number) => (
-                    <ChannelButton 
-                      key={channel.name} 
-                      channel={channel} 
-                      animationIndex={categoryChannelCounts[categoryIndex] + channelIndex} 
-                    />
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-
-          {!hasResults && (
-            <div className="text-center py-12">
-              <p className="text-gray-400 text-xl">
-                لا توجد قنوات تطابق بحثك.
-              </p>
-            </div>
-          )}
-        </div>
         <hr className="border-gray-700 my-6" />
         <footer className="text-center text-gray-500 pb-4">
-            <p className="mb-4">
-                <a href={MAIN_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="hover:text-teal-300 transition-colors duration-300">
-                    <i className="fas fa-paper-plane mr-2" aria-hidden="true"></i>
-                    انضم إلى قناتنا الرئيسية
-                </a>
-            </p>
-            <p>&copy; {new Date().getFullYear()} TechTouch. All rights reserved.</p>
+          <p className="mb-4">
+            <a href={socialLinks.mainTelegram} target="_blank" rel="noopener noreferrer" className="hover:text-teal-300 transition-colors duration-300">
+              <i className="fas fa-paper-plane mr-2" aria-hidden="true"></i>انضم إلى قناتنا الرئيسية
+            </a>
+          </p>
+          <p>&copy; {new Date().getFullYear()} {settings.siteName}. All rights reserved. <a href="#/admin" className="opacity-10 hover:opacity-100 transition-opacity">.</a></p>
         </footer>
       </main>
     </div>
