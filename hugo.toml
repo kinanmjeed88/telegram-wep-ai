@@ -1,16 +1,17 @@
 baseURL = "/"
-languageCode = "ar-SA"
+languageCode = "ar"
 title = "TechTouch Channels"
-theme = "ananke"
 
 [menu]
   [[menu.main]]
-    identifier = "posts"
+    name = "الرئيسية"
+    url = "/"
+    weight = 10
+  [[menu.main]]
+    name = "قنواتي"
+    url = "/channels/"
+    weight = 20
+  [[menu.main]]
     name = "المنشورات"
     url = "/posts/"
-    weight = 1
-  [[menu.main]]
-    identifier = "channels"
-    name = "القنوات"
-    url = "/channels/"
-    weight = 2
+    weight = 30
