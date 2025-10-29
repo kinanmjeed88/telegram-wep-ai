@@ -39,6 +39,8 @@ collections:
                 fields:
                   - { label: "اسم القناة", name: "name", widget: "string" }
                   - { label: "رابط القناة", name: "url", widget: "string" }
+                  - { label: "وصف القناة", name: "description", widget: "text" }
+                  - { label: "أيقونة (إيموجي)", name: "icon", widget: "string" }
 
   - name: "posts"
     label: "المنشورات"
