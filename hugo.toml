@@ -1,3 +1,5 @@
+# ملاحظة: لكي يتعرف Hugo على هذا الملف، يرجى إعادة تسميته من hugo.toml.txt إلى hugo.toml
+# ---
 baseURL = "https://your-site-url.netlify.app/"
 languageCode = "ar"
 title = "TechTouch Channels"
