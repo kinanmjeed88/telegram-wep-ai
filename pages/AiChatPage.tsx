@@ -34,6 +34,9 @@ const AiChatPage: React.FC = () => {
             });
 
             if (!response.ok || !response.body) {
+                if (response.status === 502) {
+                    throw new Error('حدث خطأ في الخادم (502 Bad Gateway). قد تكون هذه مشكلة مؤقتة في خدمة AI. يرجى المحاولة مرة أخرى بعد قليل.');
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
