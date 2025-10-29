@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "static/images/uploads"
+media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
 collections:
@@ -15,7 +15,8 @@ collections:
         fields:
           - { label: "الملف الشخصي", name: "profile", widget: "object", fields: [
               { label: "الاسم", name: "name", widget: "string" },
-              { label: "السيرة الذاتية", name: "bio", widget: "text" }
+              { label: "السيرة الذاتية", name: "bio", widget: "text" },
+              { label: "الصورة الشخصية", name: "picture", widget: "image", required: false }
             ] }
           - { label: "الإعدادات العامة", name: "settings", widget: "object", fields: [
               { label: "اسم الموقع", name: "siteName", widget: "string" },
@@ -46,8 +47,14 @@ collections:
     label: "المنشورات"
     folder: "content/posts"
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: "{{slug}}"
+    extension: "md"
     fields:
       - { label: "العنوان", name: "title", widget: "string" }
+      - { label: "الرابط المخصص (Slug)", name: "slug", widget: "string", hint: "مهم: استخدم الحروف الإنجليزية الصغيرة والشرطات فقط، بدون مسافات. مثال: my-first-post" }
       - { label: "تاريخ النشر", name: "date", widget: "datetime" }
-      - { label: "المحتوى", name: "body", widget: "markdown" }
+      - { label: "الصورة البارزة", name: "image", widget: "image" }
+      - { label: "الوصف المختصر (للمعاينة)", name: "description", widget: "text" }
+      - { label: "المحتوى الكامل", name: "body", widget: "markdown" }
+      - { label: "رابط يوتيوب (اختياري)", name: "youtube_url", widget: "string", required: false }
+      - { label: "رابط خارجي (اختياري)", name: "link", widget: "string", required: false }
