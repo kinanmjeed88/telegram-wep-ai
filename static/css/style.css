@@ -600,30 +600,104 @@ h1, h2, h3 {
 }
 
 @media (max-width: 480px) {
+    body {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    h1, .post-header h1 {
+        font-size: 1.5rem !important;
+    }
+
+    h2, .channel-category h2 {
+        font-size: 1.2rem;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    /* Header Nav split into two rows using grid */
+    nav ul {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px 10px; /* row-gap column-gap */
+        width: 100%;
+        padding: 0;
+        justify-items: center;
+    }
+    
+    nav ul li a {
+        font-size: 0.85rem;
+        padding-bottom: 3px;
+        text-align: center;
+    }
+
+    /* Profile Card on Homepage */
+    .profile-card {
+        padding: 20px 10px;
+    }
+    
+    .profile-card h2 {
+        font-size: 16px;
+        margin-top: 15px;
+        margin-bottom: 8px;
+    }
+
+    .profile-card .bio {
+        margin-bottom: 20px;
+    }
+
+    .profile-card .bio p {
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* Features on Homepage */
+    .features-grid {
+        gap: 10px;
+    }
+    .feature-card {
+        padding: 20px 15px;
+    }
+    .feature-card h3 {
+        font-size: 1rem;
+    }
+    .feature-card p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    /* Channels Page 3-column layout */
     .channel-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
     }
 
     .channel-card {
-        padding: 15px;
-        flex-direction: row;
-        text-align: right;
-        gap: 15px;
+        flex-direction: column;
+        text-align: center;
+        padding: 10px 5px;
+        gap: 8px;
     }
-    .channel-info p {
-        display: none;
-    }
-
+    
     .channel-icon {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .channel-info h3 {
-        font-size: 1.1rem;
+        font-size: 12px;
+        line-height: 1.3;
+        font-weight: 700;
+        margin: 0;
     }
 
+    .channel-info p {
+        display: none;
+    }
 }
+
 
 /* Accessibility Improvements */
 a:focus-visible, 
