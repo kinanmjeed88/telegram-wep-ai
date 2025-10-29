@@ -2,15 +2,19 @@
   "profile": {
     "name": "كنان الصائغ",
     "bio": "تنزيل التطبيقات الرياضيه والافلام وتطبيقات معدلة واخبار تقنية",
-    "picture": "/images/profile-placeholder.png"
+    "picture": "/images/uploads/1000138312.png"
   },
   "settings": {
-    "siteName": "TechTouch Channels",
+    "siteName": "TechTouch تقنية",
     "announcement": "مرحباً بك في موقعي!",
     "socialLinks": [
       {
         "icon": "✈️",
         "url": "https://t.me/techtouch7"
+      },
+      {
+        "icon": "📥",
+        "url": "https://t.me/techtouch4"
       }
     ]
   }
