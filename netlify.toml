@@ -1,8 +1,9 @@
-# لإعدادات النشر على Netlify.
-# أعد تسمية هذا الملف إلى netlify.toml لتفعيله.
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
 
-# مثال لتوجيه تطبيق صفحة واحدة (SPA) مثل React
-# [[redirects]]
-#   from = "/*"
-#   to = "/index.html"
-#   status = 200
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
