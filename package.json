@@ -1,0 +1,9 @@
+{
+  "name": "telegram-wep-ai",
+  "version": "1.0.0",
+  "description": "A Hugo-based static site for TechTouch channels.",
+  "private": true,
+  "scripts": {
+    "build": "hugo --gc --minify"
+  }
+}
