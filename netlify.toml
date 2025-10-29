@@ -1,9 +1,7 @@
-[build]
-  command = "hugo"
-  publish = "public"
-
-[build.environment]
-  HUGO_VERSION = "0.125.4"
-
-[context.production.environment]
-  HUGO_ENV = "production"
+# هذا الملف يقوم بإعادة توجيه جميع الطلبات إلى index.html
+# وهو أمر ضروري لتطبيقات الصفحة الواحدة (SPA) مثل React
+# لتعمل بشكل صحيح على Netlify وتجنب أخطاء "Page Not Found".
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
