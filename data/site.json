@@ -1,13 +1,13 @@
 {
   "profile": {
-    "name": "اسمك هنا",
-    "bio": "اكتب سيرتك الذاتية هنا."
+    "name": "كنان الصائغ",
+    "bio": "نشر التطبيقات والالعاب المعدلة ومعلومات واخبار تقنية واخر اخبار الذكاء الاصطناعي"
   },
   "settings": {
-    "siteName": "TechTouch Channels",
-    "announcement": "مرحباً بك في موقعي!",
+    "siteName": "TechTouch تقنية",
+    "announcement": "مرحباً بك في موقعي techtouch مبني بالذكاء الاصطناعي فقط ",
     "social": {
-      "telegram": "https://t.me/yourusername"
+      "telegram": "https://t.me/techtouchAI_bot"
     }
   }
 }
