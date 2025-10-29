@@ -1,0 +1,21 @@
+baseURL = "https://your-site-url.netlify.app/"
+languageCode = "ar"
+title = "TechTouch Channels"
+
+[params]
+  description = "موقعك لاستعراض قنوات تيليجرام التقنية والتعليمية والترفيهية."
+
+[[menu.main]]
+  name = "الرئيسية"
+  url = "/"
+  weight = 10
+
+[[menu.main]]
+  name = "قنواتي"
+  url = "/channels/"
+  weight = 20
+
+[[menu.main]]
+  name = "المنشورات"
+  url = "/posts/"
+  weight = 30
