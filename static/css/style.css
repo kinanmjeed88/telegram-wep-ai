@@ -242,6 +242,7 @@ button:disabled {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    justify-content: center;
 }
 
 .channel-card {
@@ -288,6 +289,7 @@ button:disabled {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 25px;
+    justify-content: center;
 }
 
 .post-card {
@@ -393,7 +395,9 @@ h1, h2, h3 {
 }
 .chat-form, .image-gen-form, .app-search-form {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 .chat-form input, .image-gen-form input, .app-search-form input {
     flex-grow: 1;
@@ -402,7 +406,17 @@ h1, h2, h3 {
     border: 1px solid var(--border-color);
     font-family: var(--font-family);
     font-size: 1rem;
+    width: 100%;
+    max-width: 600px;
 }
+
+.chat-form button,
+.image-gen-form button,
+.app-search-form button {
+    padding: 10px 25px;
+    font-size: 1rem;
+}
+
 .chat-form input:focus, .image-gen-form input:focus, .app-search-form input:focus {
     outline: none;
     border-color: var(--primary-color);
