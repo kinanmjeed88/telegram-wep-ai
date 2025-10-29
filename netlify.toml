@@ -1,24 +1,7 @@
-# Netlify configuration file
-
-# Build settings for a Vite-based React application
 [build]
-  # The command to build the site, as defined in your package.json
   command = "npm run build"
-  # The directory that contains the built site assets
   publish = "dist"
-  # The directory where Netlify Functions are located
-  functions = "netlify/functions"
 
-# Functions settings
-# This ensures that the 'content' directory is included in the function bundle,
-# so your functions can read the markdown files for posts at runtime.
-[functions]
-  included_files = ["content/**"]
-
-# Redirect rule for Single Page Applications (SPA)
-# This is crucial for frameworks like React. It redirects all requests
-# to the main index.html file, allowing React Router to handle client-side routing.
-# This fixes the "Page Not Found" error when refreshing or directly accessing a route.
 [[redirects]]
   from = "/*"
   to = "/index.html"
