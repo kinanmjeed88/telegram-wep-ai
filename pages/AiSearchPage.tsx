@@ -1,5 +1,5 @@
 import React, { useState, FormEvent } from 'react';
-import { App } from '../types';
+import { App } from '@/types';
 
 const AiSearchPage: React.FC = () => {
     const [query, setQuery] = useState('');

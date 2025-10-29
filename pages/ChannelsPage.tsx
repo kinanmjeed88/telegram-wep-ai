@@ -1,5 +1,5 @@
 import React from 'react';
-import channelData from '../data/channelCategories.json';
+import channelData from '@/data/channelCategories.json';
 
 const ChannelsPage: React.FC = () => {
     return (

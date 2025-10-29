@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { ChatMessage } from '../types';
+import { ChatMessage } from '@/types';
 
 const AiChatPage: React.FC = () => {
     const [history, setHistory] = useState<ChatMessage[]>([]);

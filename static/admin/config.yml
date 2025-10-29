@@ -21,9 +21,10 @@ collections:
           - { label: "الإعدادات العامة", name: "settings", widget: "object", fields: [
               { label: "اسم الموقع", name: "siteName", widget: "string" },
               { label: "شريط الإعلانات", name: "announcement", widget: "string" },
-              { label: "روابط التواصل", name: "social", widget: "object", fields: [
-                  { label: "رابط تيليجرام", name: "telegram", widget: "string" }
-                ] }
+              { label: "روابط التواصل", name: "socialLinks", widget: "list", fields: [
+                  { label: "أيقونة (إيموجي)", name: "icon", widget: "string" },
+                  { label: "الرابط", name: "url", widget: "string" }
+              ] }
             ] }
       - file: "data/channelCategories.json"
         label: "فئات القنوات"

@@ -207,7 +207,9 @@ const apps: App[] = [
   { name: 'MYTV', url: 'https://t.me/techtouch7/204' },
   { name: '✪ تـ Viva cut', url: 'https://t.me/techtouch7/2975?single' },
   { name: '✪ تـ CapCut', url: 'https://t.me/techtouch7/3287' },
+  { name: 'ناسخ تطبيقات', url: 'https://t.me/techtouch7/3472' },
 ];
+
 
 const handler: Handler = async (event): Promise<HandlerResponse> => {
     if (event.httpMethod !== 'POST') {

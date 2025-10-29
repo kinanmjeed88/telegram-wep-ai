@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import siteData from '../data/site.json';
+import siteData from '@/data/site.json';
 
 const Header: React.FC = () => {
     const menu = [

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Post } from '../types';
-import YoutubeEmbed from '../components/YoutubeEmbed';
+import { Post } from '@/types';
+import YoutubeEmbed from '@/components/YoutubeEmbed';
 
 const SinglePostPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();

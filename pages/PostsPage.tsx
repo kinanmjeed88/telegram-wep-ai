@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PostListItem } from '../types';
+import { PostListItem } from '@/types';
 
 const PostsPage: React.FC = () => {
     const [posts, setPosts] = useState<PostListItem[]>([]);
