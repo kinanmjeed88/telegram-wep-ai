@@ -211,51 +211,185 @@ const apps: App[] = [
 ];
 
 
+// Helper functions for better search functionality
+const normalizeArabicText = (text: string): string => {
+  return text
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/[ة]/g, 'ه')
+    .replace(/[ي]/g, 'ى')
+    .trim();
+};
+
+const fuzzySearch = (query: string, apps: App[]): App[] => {
+  const normalizedQuery = normalizeArabicText(query.toLowerCase());
+  
+  return apps.filter(app => {
+    const normalizedAppName = normalizeArabicText(app.name.toLowerCase());
+    
+    // Exact match
+    if (normalizedAppName.includes(normalizedQuery)) {
+      return true;
+    }
+    
+    // Partial match with word boundaries
+    const queryWords = normalizedQuery.split(/\s+/);
+    return queryWords.some(word => 
+      normalizedAppName.includes(word) && word.length > 1
+    );
+  }).slice(0, 20); // Limit results
+};
+
+const categorizeSearch = (query: string, apps: App[]): App[] => {
+  const categories = {
+    'ألعاب': ['gaming', 'game', 'عاب', 'ps', 'pc'],
+    'تسلية': ['tv', 'cinema', 'movie', 'drama', 'series', 'تيلي', 'فيديو'],
+    'أخبار': ['news', 'أخبار'],
+    'تطبيقات معدلة': ['gold', 'ذهبي', 'mod', 'تلي', 'واتساب'],
+    'ذكاء اصطناعي': ['ai', 'chat', 'ذكاء', 'bot'],
+    'تصميم': ['photo', 'design', 'photo', 'video', 'editing'],
+    'إنتاجية': ['office', 'pdf', 'document', 'notes']
+  };
+
+  const lowerQuery = query.toLowerCase();
+  
+  for (const [category, keywords] of Object.entries(categories)) {
+    if (keywords.some(keyword => lowerQuery.includes(keyword))) {
+      return fuzzySearch(query, apps).filter(app =>
+        keywords.some(keyword => app.name.toLowerCase().includes(keyword))
+      );
+    }
+  }
+  
+  return fuzzySearch(query, apps);
+};
+
 const handler: Handler = async (event): Promise<HandlerResponse> => {
     if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Method Not Allowed' };
+        return { 
+          statusCode: 405, 
+          body: JSON.stringify({ error: 'Method Not Allowed' })
+        };
     }
 
     try {
-        const { query } = JSON.parse(event.body || '{}');
-        if (!query) {
-            return { statusCode: 400, body: JSON.stringify({ error: 'Query is required' }) };
+        if (!event.body) {
+            return { 
+              statusCode: 400, 
+              body: JSON.stringify({ error: 'Request body is required' })
+            };
         }
 
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+        const { query } = JSON.parse(event.body);
         
-        const appNames = apps.map(app => app.name);
+        if (!query || typeof query !== 'string') {
+            return { 
+              statusCode: 400, 
+              body: JSON.stringify({ error: 'Valid query string is required' })
+            };
+        }
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: `User query: "${query}". Available apps: [${appNames.join(', ')}]`,
-            config: {
-                systemInstruction: `You are an expert app finder. Given a user query and a list of available app names, identify which apps the user is asking for. Your response must be a JSON array containing the exact names of the matched apps from the provided list. If no apps match, return an empty array.`,
-                responseMimeType: "application/json",
-                responseSchema: {
-                    type: Type.ARRAY,
-                    items: {
-                        type: Type.STRING,
+        if (query.length < 2) {
+            return { 
+              statusCode: 400, 
+              body: JSON.stringify({ error: 'Query must be at least 2 characters long' })
+            };
+        }
+
+        if (query.length > 100) {
+            return { 
+              statusCode: 400, 
+              body: JSON.stringify({ error: 'Query too long (max 100 characters)' })
+            };
+        }
+
+        const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            console.error('API key not configured');
+            return { 
+              statusCode: 500, 
+              body: JSON.stringify({ error: 'Server configuration error: API key not found' })
+            };
+        }
+
+        // First try AI-powered search
+        let foundApps: App[] = [];
+        
+        try {
+            const ai = new GoogleGenAI({ apiKey });
+            const appNames = apps.map(app => app.name);
+
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: `User query: "${query}". Available apps: [${appNames.join(', ')}]`,
+                config: {
+                    systemInstruction: `You are an expert app finder. Given a user query and a list of available app names, identify which apps the user is asking for. Your response must be a JSON array containing the exact names of the matched apps from the provided list. If no apps match, return an empty array.`,
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: Type.ARRAY,
+                        items: {
+                            type: Type.STRING,
+                        },
                     },
+                    temperature: 0.3, // Lower temperature for more consistent results
                 },
-            },
+            });
+
+            const jsonStr = response.text.trim();
+            const matchedNames = JSON.parse(jsonStr);
+            foundApps = apps.filter(app => matchedNames.includes(app.name));
+            
+        } catch (aiError) {
+            console.error('AI search failed, falling back to fuzzy search:', aiError);
+            // Fallback to local search if AI fails
+            foundApps = categorizeSearch(query, apps);
+        }
+
+        // If AI and categorization search found nothing, do basic fuzzy search
+        if (foundApps.length === 0) {
+            foundApps = fuzzySearch(query, apps);
+        }
+        
+        // Sort results by relevance
+        foundApps.sort((a, b) => {
+            const aName = a.name.toLowerCase();
+            const bName = b.name.toLowerCase();
+            const queryLower = query.toLowerCase();
+            
+            // Exact matches first
+            if (aName === queryLower) return -1;
+            if (bName === queryLower) return 1;
+            
+            // Starts with query second
+            if (aName.startsWith(queryLower) && !bName.startsWith(queryLower)) return -1;
+            if (bName.startsWith(queryLower) && !aName.startsWith(queryLower)) return 1;
+            
+            // Contains query third
+            if (aName.includes(queryLower) && !bName.includes(queryLower)) return -1;
+            if (bName.includes(queryLower) && !aName.includes(queryLower)) return 1;
+            
+            return 0;
         });
-
-        const jsonStr = response.text.trim();
-        const matchedNames = JSON.parse(jsonStr);
-
-        const foundApps = apps.filter(app => matchedNames.includes(app.name));
         
         return {
             statusCode: 200,
-            body: JSON.stringify({ apps: foundApps }),
+            body: JSON.stringify({ 
+              apps: foundApps,
+              count: foundApps.length,
+              query: query,
+              timestamp: new Date().toISOString()
+            }),
         };
 
     } catch (e: unknown) {
         const error = e as Error;
+        console.error('App search error:', error);
+        
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message }),
+            body: JSON.stringify({ 
+              error: 'حدث خطأ في البحث. يرجى المحاولة مرة أخرى.',
+              timestamp: new Date().toISOString()
+            }),
         };
     }
 };

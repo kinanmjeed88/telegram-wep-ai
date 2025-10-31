@@ -1,12 +1,23 @@
 {
   "name": "techtouch-hugo-site",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "TechTouch - تطبيق ويب تيليجرام مع ميزات الذكاء الاصطناعي",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:netlify": "netlify dev",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build:hugo": "hugo --gc",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'Add ESLint configuration'",
+    "clean": "rm -rf dist .vite node_modules",
+    "start": "npm run dev",
+    "netlify:dev": "netlify dev",
+    "deploy": "netlify deploy --prod",
+    "analyze": "npm run build && npx vite-bundle-analyzer dist",
+    "test": "echo 'Add test configuration'"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
@@ -21,7 +32,32 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
+    "netlify-cli": "^17.0.0",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0"
-  }
+    "vite": "^5.2.0",
+    "vite-bundle-analyzer": "^0.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kinanmjeed88/telegram-wep-ai.git"
+  },
+  "keywords": [
+    "telegram",
+    "ai",
+    "react",
+    "typescript",
+    "hugo",
+    "netlify",
+    "gemini",
+    "arabic"
+  ],
+  "author": {
+    "name": "كنان الصائغ",
+    "email": "contact@techtouch.com"
+  },
+  "license": "MIT"
 }
